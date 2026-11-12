@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <title>SPENDWISE TRACKER - Budget Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Dashboard Layout -->
+    <div class="dashboard">
+
+        <!-- Sidebar / Navigation -->
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+    <img src="Image/logo.jpg"
+         alt="SpendWise budget tracker logo"
+         width="100">
+    <h2>SPENDWISE TRACKER</h2>
+
+
+    
+</div>
+            </div>
+
+            </nav>
+
+            
+
+
+    </div>
+
+    <div class="sidebar-footer">
+    </div>
+
+ 
+                
+
+        </aside>
+
+
+        
+                    
+               
+
+                    <p>My Personal Budget Tracker</p>
+
+                    <p>
+                        Dear Customer, Track your income and expenses in one place.
+                    </p>
+                </div>
+
+                <div class="user-info">
+                    Welcome, Kachinga
+                </div>
+
+            </header>
+
+
+            <!-- Dashboard Summary -->
+            <section class="summary">
+
+                <div class="summary-item">
+                    <span>Total Budget</span>
+                    <strong>KSh 50,000</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Total Spent</span>
+                    <strong>KSh 18,500</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Remaining</span>
+                    <strong>KSh 31,500</strong>
+                </div>
+
+            </section>
+
+
+            <!-- Six Category Cards -->
+            <section id="categories" class="categories">
+
+                <h2>Expense Categories</h2>
+
+                <div class="card-grid">
+
+
+                    <!-- Food Card -->
+                    <article class="category-card" tabindex="0">
+
+                        <div class="card-content">
+                            <h3>Food</h3>
+                            <p>Meals and groceries</p>
+                        </div>
+
+                        <strong>KSh 5,000</strong>
+
+                    </article>
+
+
+                    <!-- Transport Card -->
+                    <article class="category-card" tabindex="0">
+
+                        <div class="card-content">
+                            <h3>Transport</h3>
+                            <p>Travel and bus fare</p>
+                        </div>
+
+                        <strong>KSh 3,500</strong>
+
+                    </article>
+
+
+                    <!-- Rent Card -->
+                    <article class="category-card" tabindex="0">
+
+                        <div class="card-content">
+                            <h3>Rent</h3>
+                            <p>House rent and housing</p>
+                        </div>
+
+                        <strong>KSh 7,000</strong>
+
+                    </article>
+
+
+                    <!-- Entertainment Card -->
+                    <article class="category-card" tabindex="0">
+
+                        <div class="card-content">
+                            <h3>Entertainment</h3>
+                            <p>Leisure and activities</p>
+                        </div>
+
+                        <strong>KSh 1,500</strong>
+
+                    </article>
+
+
+                    <!-- Savings Card -->
+                    <article class="category-card" tabindex="0">
+
+                        <div class="card-content">
+                            <h3>Savings</h3>
+                            <p>Monthly savings</p>
+                        </div>
+
+                        <strong>KSh 8,000</strong>
+
+                    </article>
+
+
+                    <!-- Utilities Card -->
+                    <article class="category-card" tabindex="0">
+
+                        <div class="card-content">
+                            <h3>Utilities</h3>
+                            <p>Electricity and internet</p>
+                        </div>
+
+                        <strong>KSh 2,000</strong>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- Add Expense Section -->
+<section id="add-expense" class="add-expense-section">
+
+    <h2>Add Expense</h2>
+
+    <form id="expense-form">
+
+        <label for="expense-name">Expense Name:</label>
+
+        <input type="text"
+               id="expense-name"
+               name="expense-name"
+               placeholder="e.g. Lunch"
+               required>
+
+        <label for="expense-amount">Amount (KSh):</label>
+
+        <input type="number"
+               id="expense-amount"
+               name="expense-amount"
+               placeholder="e.g. 500"
+               min="1"
+               required>
+
+        <label for="expense-category">Category:</label>
+
+        <select id="expense-category"
+                name="expense-category"
+                required>
+
+            <option value="">Select Category</option>
+            <option value="food">Food</option>
+            <option value="transport">Transport</option>
+            <option value="rent">Rent</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="other">Other</option>
+
+        </select>
+
+        <label for="expense-date">Date:</label>
+
+        <input type="date"
+               id="expense-date"
+               name="expense-date"
+               required>
+
+        <button type="submit">Add Expense</button>
+
+    </form>
+
+</section>
+
+
+           <!-- Expenses Section -->
+<section id="expenses" class="expenses-section">
+
+    <h2>My Expenses</h2>
+
+    <table id="expense-table">
+
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Amount (KSh)</th>
+                <th>Category</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Breakfast</td>
+                <td>250</td>
+                <td>Food</td>
+                <td>2026-09-01</td>
+            </tr>
+
+            <tr>
+                <td>Bus Fare</td>
+                <td>150</td>
+                <td>Transport</td>
+                <td>2026-09-02</td>
+            </tr>
+
+            <tr>
+                <td>House Rent</td>
+                <td>7000</td>
+                <td>Rent</td>
+                <td>2026-09-03</td>
+            </tr>
+
+            <tr>
+                <td>Lunch</td>
+                <td>400</td>
+                <td>Food</td>
+                <td>2026-09-04</td>
+            </tr>
+
+            <tr>
+                <td>Internet</td>
+                <td>1000</td>
+                <td>Utilities</td>
+                <td>2026-09-05</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</section>
+
+            <!-- How to Use Section -->
+            <section class="instructions">
+
+                <details>
+
+                    <summary>
+                        How to use this tracker
+                    </summary>
+
+                    <p>
+                        Enter the name of your expense, the amount you spent,
+                        select a category, and choose the date. Click the
+                        "Add Expense" button when you are ready.
+                    </p>
+
+                    <p>
+                        The expense table shows sample expenses and helps
+                        you organize your spending.
+                    </p>
+
+                </details>
+
+            </section>
+
+
+            <!-- Multimedia Section -->
+            <section id="budgeting-tips" class="multimedia">
+
+                <h2>Budgeting Tips</h2>
+
+                <p>
+                    Watch the video below for useful budgeting and
+                    money-management tips.
+                </p>
+
+                <iframe
+                    width="560"
+                    height="315"
+                    src="https://www.youtube.com/embed/37kpWm0J8zU"
+                    title="How To Budget Money"
+                    frameborder="0"
+                    allowfullscreen>
+                </iframe>
+
+            </section>
+
+
+            <!-- Footer -->
+            <footer>
+
+                <p>
+                    &copy; 2026 SpendWise - Budget Tracker
+                </p>
+
+            </footer>
+
+
+        </main>
+
+    </div>
+
+    
+<script src="script.js"></script>
+
+
+</body>
+
+</html>

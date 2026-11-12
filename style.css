@@ -1,0 +1,142 @@
+
+// =====================================
+// SPENDWISE BUDGET TRACKER
+// =====================================
+
+// Set the total budget
+const totalBudget = 50000;
+
+// Select HTML elements
+const expenseForm = document.querySelector("#expense-form");
+const expenseTable = document.querySelector("#expense-table tbody");
+
+const summaryItems = document.querySelectorAll(".summary-item strong");
+
+// Load saved expenses from Local Storage
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+// =====================================
+// DISPLAY EXPENSES
+// =====================================
+
+function displayExpenses() {
+
+    // Clear existing table rows
+    expenseTable.innerHTML = "";
+
+    // Display every expense
+    expenses.forEach(function(expense) {
+
+        const newRow = document.createElement("tr");
+
+        newRow.innerHTML = `
+            <td>${escapeHTML(expense.name)}</td>
+            <td>KSh ${expense.amount.toLocaleString()}</td>
+            <td>${escapeHTML(expense.category)}</td>
+            <td>${escapeHTML(expense.date)}</td>
+        `;
+
+        expenseTable.appendChild(newRow);
+
+    });
+
+    // Update dashboard totals
+    updateSummary();
+}
+
+// =====================================
+// UPDATE DASHBOARD SUMMARY
+// =====================================
+
+function updateSummary() {
+
+    const totalSpent = expenses.reduce(function(total, expense) {
+        return total + expense.amount;
+    }, 0);
+
+    const remainingBudget = totalBudget - totalSpent;
+
+    summaryItems[0].textContent =
+        `KSh ${totalBudget.toLocaleString()}`;
+
+    summaryItems[1].textContent =
+        `KSh ${totalSpent.toLocaleString()}`;
+
+    summaryItems[2].textContent =
+        `KSh ${remainingBudget.toLocaleString()}`;
+}
+
+// =====================================
+// SAFELY DISPLAY TEXT
+// =====================================
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, function(character) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[character];
+    });
+}
+
+// =====================================
+// ADD NEW EXPENSE
+// =====================================
+
+expenseForm.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    // Get form values
+    const expenseName =
+        document.querySelector("#expense-name").value.trim();
+
+    const expenseAmount =
+        Number(document.querySelector("#expense-amount").value);
+
+    const expenseCategory =
+        document.querySelector("#expense-category").value;
+
+    const expenseDate =
+        document.querySelector("#expense-date").value;
+
+    // Validate information
+    if (!expenseName || expenseAmount <= 0 ||
+        !expenseCategory || !expenseDate) {
+
+        alert("Please enter all expense details correctly.");
+        return;
+    }
+
+    // Create expense object
+    const newExpense = {
+        name: expenseName,
+        amount: expenseAmount,
+        category: expenseCategory,
+        date: expenseDate
+    };
+
+    // Add expense to array
+    expenses.push(newExpense);
+
+    // Save expenses
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+
+    // Refresh dashboard
+    displayExpenses();
+
+    // Clear form
+    expenseForm.reset();
+
+    alert("Expense added successfully!");
+
+});
+
+// =====================================
+// LOAD SAVED EXPENSES ON PAGE OPEN
+// =====================================
+
+displayExpenses();
