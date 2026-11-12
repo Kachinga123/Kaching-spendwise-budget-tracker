@@ -1,142 +1,273 @@
 
-// =====================================
-// SPENDWISE BUDGET TRACKER
-// =====================================
-
-// Set the total budget
-const totalBudget = 50000;
-
-// Select HTML elements
-const expenseForm = document.querySelector("#expense-form");
-const expenseTable = document.querySelector("#expense-table tbody");
-
-const summaryItems = document.querySelectorAll(".summary-item strong");
-
-// Load saved expenses from Local Storage
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
-
-// =====================================
-// DISPLAY EXPENSES
-// =====================================
-
-function displayExpenses() {
-
-    // Clear existing table rows
-    expenseTable.innerHTML = "";
-
-    // Display every expense
-    expenses.forEach(function(expense) {
-
-        const newRow = document.createElement("tr");
-
-        newRow.innerHTML = `
-            <td>${escapeHTML(expense.name)}</td>
-            <td>KSh ${expense.amount.toLocaleString()}</td>
-            <td>${escapeHTML(expense.category)}</td>
-            <td>${escapeHTML(expense.date)}</td>
-        `;
-
-        expenseTable.appendChild(newRow);
-
-    });
-
-    // Update dashboard totals
-    updateSummary();
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-// =====================================
-// UPDATE DASHBOARD SUMMARY
-// =====================================
-
-function updateSummary() {
-
-    const totalSpent = expenses.reduce(function(total, expense) {
-        return total + expense.amount;
-    }, 0);
-
-    const remainingBudget = totalBudget - totalSpent;
-
-    summaryItems[0].textContent =
-        `KSh ${totalBudget.toLocaleString()}`;
-
-    summaryItems[1].textContent =
-        `KSh ${totalSpent.toLocaleString()}`;
-
-    summaryItems[2].textContent =
-        `KSh ${remainingBudget.toLocaleString()}`;
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #333;
 }
 
-// =====================================
-// SAFELY DISPLAY TEXT
-// =====================================
-
-function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, function(character) {
-        return {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        }[character];
-    });
+.app-container {
+    display: flex;
+    min-height: 100vh;
 }
 
-// =====================================
-// ADD NEW EXPENSE
-// =====================================
+.sidebar {
+    width: 240px;
+    background: #16324f;
+    color: white;
+    padding: 25px 18px;
+    display: flex;
+    flex-direction: column;
+}
 
-expenseForm.addEventListener("submit", function(event) {
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+}
 
-    event.preventDefault();
+.logo img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    border-radius: 8px;
+}
 
-    // Get form values
-    const expenseName =
-        document.querySelector("#expense-name").value.trim();
+.logo h2 {
+    font-size: 22px;
+}
 
-    const expenseAmount =
-        Number(document.querySelector("#expense-amount").value);
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
 
-    const expenseCategory =
-        document.querySelector("#expense-category").value;
+.sidebar nav a {
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 6px;
+}
 
-    const expenseDate =
-        document.querySelector("#expense-date").value;
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: #285577;
+}
 
-    // Validate information
-    if (!expenseName || expenseAmount <= 0 ||
-        !expenseCategory || !expenseDate) {
+.sidebar-footer {
+    margin-top: auto;
+    font-size: 13px;
+    color: #d5e0ea;
+}
 
-        alert("Please enter all expense details correctly.");
-        return;
+.main-content {
+    flex: 1;
+    padding: 30px;
+    min-width: 0;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    color: #16324f;
+    margin-bottom: 8px;
+}
+
+section {
+    margin-bottom: 30px;
+}
+
+section h2 {
+    margin-bottom: 18px;
+    color: #16324f;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.summary-card,
+.category-card {
+    background: white;
+    padding: 22px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.summary-card h3,
+.category-card h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.summary-card p,
+.category-card p {
+    font-size: 21px;
+    font-weight: bold;
+    color: #167d54;
+}
+
+form {
+    background: white;
+    padding: 22px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+#expense-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccd3dc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid #78a9d1;
+    border-color: #285577;
+}
+
+button {
+    background: #167d54;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #105d3e;
+}
+
+#expense-form button {
+    width: fit-content;
+}
+
+#budget-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 500px;
+}
+
+#budget-form button {
+    width: fit-content;
+}
+
+.table-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th,
+td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e5e8ec;
+}
+
+th {
+    background: #16324f;
+    color: white;
+}
+
+.delete-button {
+    background: #c0392b;
+    padding: 8px 12px;
+}
+
+.delete-button:hover {
+    background: #962d22;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 10px;
+    color: #66717d;
+    font-size: 14px;
+}
+
+@media (max-width: 900px) {
+    .summary-cards,
+    .category-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .app-container {
+        flex-direction: column;
     }
 
-    // Create expense object
-    const newExpense = {
-        name: expenseName,
-        amount: expenseAmount,
-        category: expenseCategory,
-        date: expenseDate
-    };
+    .sidebar {
+        width: 100%;
+        padding: 18px;
+    }
 
-    // Add expense to array
-    expenses.push(newExpense);
+    .logo {
+        margin-bottom: 18px;
+    }
 
-    // Save expenses
-    localStorage.setItem("expenses", JSON.stringify(expenses));
+    .sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
 
-    // Refresh dashboard
-    displayExpenses();
+    .sidebar-footer {
+        margin-top: 18px;
+    }
 
-    // Clear form
-    expenseForm.reset();
+    .main-content {
+        padding: 18px;
+    }
 
-    alert("Expense added successfully!");
-
-});
-
-// =====================================
-// LOAD SAVED EXPENSES ON PAGE OPEN
-// =====================================
-
-displayExpenses();
+    .summary-cards,
+    .category-grid,
+    #expense-form {
+        grid-template-columns: 1fr;
+    }
+}
