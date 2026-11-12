@@ -1,168 +1,174 @@
 
-// =====================================
-// SPENDWISE BUDGET TRACKER
-// =====================================
+const budgetForm = document.getElementById("budget-form");
+const budgetInput = document.getElementById("budget");
 
-const totalBudget = 50000;
+const expenseForm = document.getElementById("expense-form");
+const expenseName = document.getElementById("expense-name");
+const expenseAmount = document.getElementById("expense-amount");
+const expenseCategory = document.getElementById("expense-category");
+const expenseDate = document.getElementById("expense-date");
 
-const expenseForm = document.querySelector("#expense-form");
-const expenseTable = document.querySelector("#expense-table tbody");
-const summaryItems = document.querySelectorAll(".summary-item strong");
+const expenseTableBody = document.getElementById("expense-table-body");
 
-let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+let totalBudget = Number(localStorage.getItem("spendwiseBudget")) || 0;
 
-// =====================================
-// DISPLAY EXPENSES
-// =====================================
+let expenses = JSON.parse(localStorage.getItem("spendwiseExpenses")) || [];
 
-function displayExpenses() {
-
-    expenseTable.innerHTML = "";
-
-    expenses.forEach(function(expense, index) {
-
-        const newRow = document.createElement("tr");
-
-        newRow.innerHTML = `
-            <td>${escapeHTML(expense.name)}</td>
-            <td>KSh ${expense.amount.toLocaleString()}</td>
-            <td>${escapeHTML(expense.category)}</td>
-            <td>${escapeHTML(expense.date)}</td>
-            <td>
-                <button type="button"
-                        class="delete-expense"
-                        data-index="${index}">
-                    Delete
-                </button>
-            </td>
-        `;
-
-        expenseTable.appendChild(newRow);
-    });
-
-    updateSummary();
+function formatCurrency(amount) {
+    return new Intl.NumberFormat("en-KE", {
+        style: "currency",
+        currency: "KES",
+        minimumFractionDigits: 2
+    }).format(amount);
 }
 
-// =====================================
-// UPDATE DASHBOARD SUMMARY
-// =====================================
+function saveData() {
+    localStorage.setItem("spendwiseBudget", totalBudget);
+    localStorage.setItem("spendwiseExpenses", JSON.stringify(expenses));
+}
 
-function updateSummary() {
-
-    const totalSpent = expenses.reduce(function(total, expense) {
+function updateDashboard() {
+    const totalExpenses = expenses.reduce((total, expense) => {
         return total + expense.amount;
     }, 0);
 
-    const remainingBudget = totalBudget - totalSpent;
+    const remainingBalance = totalBudget - totalExpenses;
 
-    summaryItems[0].textContent =
-        `KSh ${totalBudget.toLocaleString()}`;
+    document.getElementById("total-budget").textContent =
+        formatCurrency(totalBudget);
 
-    summaryItems[1].textContent =
-        `KSh ${totalSpent.toLocaleString()}`;
+    document.getElementById("total-expenses").textContent =
+        formatCurrency(totalExpenses);
 
-    summaryItems[2].textContent =
-        `KSh ${remainingBudget.toLocaleString()}`;
+    document.getElementById("remaining-balance").textContent =
+        formatCurrency(remainingBalance);
+
+    updateCategoryTotals();
 }
 
-// =====================================
-// SAFELY DISPLAY TEXT
-// =====================================
+function updateCategoryTotals() {
+    const categoryTotals = {};
 
-function escapeHTML(value) {
+    expenses.forEach(expense => {
+        categoryTotals[expense.category] =
+            (categoryTotals[expense.category] || 0) + expense.amount;
+    });
 
-    return String(value).replace(/[&<>"']/g, function(character) {
+    const categoryElements = {
+        "Meals and groceries": "category-meals-and-groceries",
+        "Travel and bus fare": "category-travel-and-bus-fare",
+        "House rent and housing": "category-house-rent-and-housing",
+        "Entertainment": "category-entertainment",
+        "Utilities": "category-utilities",
+        "Other": "category-other"
+    };
 
-        return {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        }[character];
-
+    Object.entries(categoryElements).forEach(([category, elementId]) => {
+        document.getElementById(elementId).textContent =
+            formatCurrency(categoryTotals[category] || 0);
     });
 }
 
-// =====================================
-// ADD NEW EXPENSE
-// =====================================
+function displayExpenses() {
+    expenseTableBody.innerHTML = "";
 
-expenseForm.addEventListener("submit", function(event) {
+    expenses.forEach(expense => {
+        const row = document.createElement("tr");
 
+        const nameCell = document.createElement("td");
+        nameCell.textContent = expense.name;
+
+        const amountCell = document.createElement("td");
+        amountCell.textContent = formatCurrency(expense.amount);
+
+        const categoryCell = document.createElement("td");
+        categoryCell.textContent = expense.category;
+
+        const dateCell = document.createElement("td");
+        dateCell.textContent = expense.date;
+
+        const actionCell = document.createElement("td");
+        const deleteButton = document.createElement("button");
+
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "delete-button";
+        deleteButton.type = "button";
+
+        deleteButton.addEventListener("click", () => {
+            deleteExpense(expense.id);
+        });
+
+        actionCell.appendChild(deleteButton);
+
+        row.appendChild(nameCell);
+        row.appendChild(amountCell);
+        row.appendChild(categoryCell);
+        row.appendChild(dateCell);
+        row.appendChild(actionCell);
+
+        expenseTableBody.appendChild(row);
+    });
+}
+
+function deleteExpense(id) {
+    expenses = expenses.filter(expense => expense.id !== id);
+
+    saveData();
+    displayExpenses();
+    updateDashboard();
+}
+
+budgetForm.addEventListener("submit", function(event) {
     event.preventDefault();
 
-    const expenseName =
-        document.querySelector("#expense-name").value.trim();
+    const budgetValue = Number(budgetInput.value);
 
-    const expenseAmount =
-        Number(document.querySelector("#expense-amount").value);
+    if (!Number.isFinite(budgetValue) || budgetValue < 0) {
+        alert("Please enter a valid budget.");
+        return;
+    }
 
-    const expenseCategory =
-        document.querySelector("#expense-category").value;
+    totalBudget = budgetValue;
 
-    const expenseDate =
-        document.querySelector("#expense-date").value;
+    saveData();
+    updateDashboard();
 
-    if (!expenseName || expenseAmount <= 0 ||
-        !expenseCategory || !expenseDate) {
+    budgetForm.reset();
 
-        alert("Please enter all expense details correctly.");
+    alert("Budget saved successfully.");
+});
+
+expenseForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = expenseName.value.trim();
+    const amount = Number(expenseAmount.value);
+    const category = expenseCategory.value;
+    const date = expenseDate.value;
+
+    if (!name || !Number.isFinite(amount) || amount <= 0 || !category || !date) {
+        alert("Please enter valid information in all expense fields.");
         return;
     }
 
     const newExpense = {
-        name: expenseName,
-        amount: expenseAmount,
-        category: expenseCategory,
-        date: expenseDate
+        id: Date.now().toString(),
+        name: name,
+        amount: amount,
+        category: category,
+        date: date
     };
 
     expenses.push(newExpense);
 
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-
+    saveData();
     displayExpenses();
+    updateDashboard();
 
     expenseForm.reset();
 
-    alert("Expense added successfully!");
-
+    alert("Expense added successfully.");
 });
-
-// =====================================
-// DELETE EXPENSE
-// =====================================
-
-expenseTable.addEventListener("click", function(event) {
-
-    if (event.target.classList.contains("delete-expense")) {
-
-        const index = Number(event.target.dataset.index);
-
-        const confirmDelete = confirm(
-            "Are you sure you want to delete this expense?"
-        );
-
-        if (confirmDelete) {
-
-            expenses.splice(index, 1);
-
-            localStorage.setItem(
-                "expenses",
-                JSON.stringify(expenses)
-            );
-
-            displayExpenses();
-
-            alert("Expense deleted successfully!");
-        }
-    }
-
-});
-
-// =====================================
-// LOAD SAVED EXPENSES
-// =====================================
 
 displayExpenses();
+updateDashboard();
