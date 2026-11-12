@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SpendWise is a simple personal budget and expense tracking application.">
+    <meta name="description" content="SpendWise personal budget and expense tracker.">
     <title>SpendWise - Personal Budget Tracker</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -62,7 +62,8 @@
 
                 <form id="budget-form">
                     <label for="budget">Enter your total budget (KSh)</label>
-                    <input type="number" id="budget" min="0" step="0.01" placeholder="Enter budget" required>
+                    <input type="number" id="budget" min="0" step="0.01"
+                        placeholder="Enter budget" required>
                     <button type="submit">Save Budget</button>
                 </form>
             </section>
@@ -73,12 +74,15 @@
                 <form id="expense-form">
                     <div class="form-group">
                         <label for="expense-name">Expense Name</label>
-                        <input type="text" id="expense-name" placeholder="e.g. Food shopping" required>
+                        <input type="text" id="expense-name"
+                            placeholder="e.g. Food shopping" required>
                     </div>
 
                     <div class="form-group">
                         <label for="expense-amount">Amount (KSh)</label>
-                        <input type="number" id="expense-amount" min="0.01" step="0.01" placeholder="Enter amount" required>
+                        <input type="number" id="expense-amount"
+                            min="0.01" step="0.01"
+                            placeholder="Enter amount" required>
                     </div>
 
                     <div class="form-group">
@@ -117,6 +121,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
+
                         <tbody id="expense-table-body">
                         </tbody>
                     </table>
@@ -127,6 +132,7 @@
                 <h2>Expense Categories</h2>
 
                 <div class="category-grid">
+
                     <div class="category-card">
                         <h3>Meals and groceries</h3>
                         <p id="category-meals-and-groceries">KSh 0.00</p>
@@ -156,6 +162,7 @@
                         <h3>Other</h3>
                         <p id="category-other">KSh 0.00</p>
                     </div>
+
                 </div>
             </section>
 
